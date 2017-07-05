@@ -1,11 +1,21 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
 
-/**
- * Gets a welcome mesage from the API.
- */
+// APIs routes.
+const userRoutes = require('./users');
+
+const router = express.Router();
+
+/** GET / -  welcome mesage from the API */
 router.get('/', function(req, res, next) {
   res.json({ message: 'Welcome to WhatsDown API!' });
 });
+
+/** GET /health-check - Check service health */
+router.get('/health-check', (req, res) =>
+  res.send('OK')
+);
+
+// mount user routes at /users
+router.use('/users', userRoutes);
 
 module.exports = router;

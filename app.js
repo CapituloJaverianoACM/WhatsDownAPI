@@ -5,6 +5,20 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const mongoose = require('mongoose');
+
+/*
+ * This file is ignored for security. You have to create your own config file
+ * that contains secretKey and mongoUrl.
+ * Example: https://github.com/juanpa097/NodeJsCourse/blob/master/rest-resver-passport/config.js
+*/
+const config = require('./config/config');
+
+// Connects to database
+mongoose.connect(config.mongoUrl, {useMongoClient: true});
+const db = mongoose.connection;
+db.on('error',console.error.bind(console, 'connection error:'));
+db.once('open', () => { console.log("Connected correctly to database"); });
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -23,12 +37,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
 
-app.use('/', index);
-app.use('/users', users);
+// mount all routes on /api path
+app.use('/api', index);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
@@ -39,9 +53,13 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // return error message.
   res.status(err.status || 500);
-  res.render('error');
+  res.json({
+    error: 'There has been an error in the server.',
+    errorMessage: err.message,
+    errorStatus: err.status
+  });
 });
 
 module.exports = app;
