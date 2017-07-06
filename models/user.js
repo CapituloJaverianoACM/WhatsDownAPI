@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const passportLocalMongoose = require('passport-local-mongoose');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema ({
@@ -7,6 +8,7 @@ const UserSchema = new Schema ({
     required: true,
     unique: true
   },
+  passport: String,
   name: {
     type: String,
     required: true
@@ -37,6 +39,9 @@ const UserSchema = new Schema ({
 	"mobileNumber": 3103179283
 }
 */
+
+// Use passport with mongoose for authentication
+UserSchema.plugin(passportLocalMongoose);
 
 /**
  * @typedef User

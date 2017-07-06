@@ -8,10 +8,15 @@ router.route('/')
   /** GET /api/users - Get list of users */
   .get(UserController.list)
 
-  /** POST /api/users - Create new user */
-  .post(UserController.create)
-
   /** DELETE /api/users - Remove all users */
   .delete(UserController.removeAll);
+
+router.route('/register')
+  /** POST /api/users/register - Create new user */
+  .post(UserController.register);
+
+router.route('/login')
+  /** POST /api/users/login - Login new user and gives JWT*/
+  .post(UserController.login);
 
 module.exports = router;

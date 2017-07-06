@@ -5,6 +5,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const passport = require('passport');
 const mongoose = require('mongoose');
 
 /*
@@ -13,6 +14,7 @@ const mongoose = require('mongoose');
  * Example: https://github.com/juanpa097/NodeJsCourse/blob/master/rest-resver-passport/config.js
 */
 const config = require('./config/config');
+const authenticate = require('./controllers/authController');
 
 // Connects to database
 mongoose.connect(config.mongoUrl, {useMongoClient: true});
@@ -33,6 +35,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Passport configuration
+app.use(passport.initialize());
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
