@@ -13,13 +13,15 @@ const UserSchema = new Schema ({
     type: String,
     required: true
   },
-  status: {
+  statusMessage: {
     type: String,
-    required: false
+    required: false,
+    default: ''
   },
   image: {
     type: String,
-    required: false
+    required: false,
+    default: ''
   },
   mobileNumber: {
     type: String,

@@ -19,4 +19,8 @@ router.route('/login')
   /** POST /api/users/login - Login new user and gives JWT*/
   .post(UserController.login);
 
+router.route('/:username')
+  /** GET /api/users/:usernae - Finds user's information */
+  .get(UserController.findUser);
+
 module.exports = router;

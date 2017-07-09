@@ -79,7 +79,18 @@ function removeAll(req, res, next) {
   User.remove({}, (err, response) => {
     if(err) next(err);
     res.json(response);
-  })
+  });
 }
 
-module.exports = { list, register, login, removeAll};
+/**
+  * Returns user's information.
+  * @return {JSON} user query.
+  */
+function findUser(req, res, next) {
+  User.findOne({'username': req.params.username}, (err, query) => {
+    if(err) next(err);
+    res.json(query);
+  });
+}
+
+module.exports = { list, register, login, removeAll, findUser};
