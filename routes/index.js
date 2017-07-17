@@ -2,6 +2,7 @@ const express = require('express');
 
 // APIs routes.
 const userRoutes = require('./users');
+const chatRoutes = require('./chats');
 
 const router = express.Router();
 
@@ -17,5 +18,8 @@ router.get('/health-check', (req, res) =>
 
 // mount user routes at /users
 router.use('/users', userRoutes);
+
+// mount chat routes at /chats
+router.use('/chats', chatRoutes);
 
 module.exports = router;

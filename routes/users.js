@@ -16,11 +16,25 @@ router.route('/register')
   .post(UserController.register);
 
 router.route('/login')
-  /** POST /api/users/login - Login new user and gives JWT*/
+  /** POST /api/users/login - Login new user and gives JWT */
   .post(UserController.login);
 
 router.route('/:username')
   /** GET /api/users/:usernae - Finds user's information */
   .get(UserController.findUser);
+
+router.route('/:username/contacts/')
+  /** GET /api/users/:username/contacts - Lists all user's contacts */
+  .get(UserController.listContacts);
+
+router.route('/:username/contacts/:contactUsername')
+  /**
+    * PUT /api/users/:username/contacts/:newContact -
+    * Adds a contact to the user
+    */
+  .put(UserController.addContact)
+
+  /** DELETE /api/users/:username/contacts/:newContact - Removes contact */
+  .delete(UserController.removeContact);
 
 module.exports = router;

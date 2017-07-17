@@ -3,6 +3,13 @@ const passport = require('passport');
 const User = require('../models/user');
 const Verify = require('./verifyController');
 
+const errorObject = {
+  error: {
+    name: 'UserNotFound',
+    message: 'User not found.'
+  }
+};
+
 function list(req, res, next) {
   User.find({}, (err, query) => {
     if (err) next(err);
@@ -35,7 +42,6 @@ function register(req, res, next) {
  * @returns {JSON}
  */
 function login(req, res, next) {
-  console.log('Login Function');
   passport.authenticate('local',(err, user, info) => {
     if(err) return next(err);
     if(!user) {
@@ -89,8 +95,89 @@ function removeAll(req, res, next) {
 function findUser(req, res, next) {
   User.findOne({'username': req.params.username}, (err, query) => {
     if(err) next(err);
+    if(query === null) {
+      return res.status(404).json(errorObject);
+    }
     res.json(query);
   });
 }
 
-module.exports = { list, register, login, removeAll, findUser};
+/**
+  * Looks for the user and lists all it's contacts.
+  * @return {JSON} array of contacts.
+  */
+function listContacts(req, res, next) {
+  User.findOne({'username': req.params.username}, (err, query) => {
+    if(err) next(err);
+    if(query === null) {
+      return res.status(404).json(errorObject);
+    }
+    res.json(query.contacts);
+  });
+}
+
+/**
+  * Check if user exists and if it does is added to the contacts
+  * array.
+  * @return {JSON} possible error or confirmation.
+  */
+function addContact(req, res, next) {
+  let newContactUsername = req.params.contactUsername;
+  let currentUsername = req.params.username;
+
+  User.findOne({'username': newContactUsername}, (err, newContact) => {
+    if(err) next(err);
+    if(newContact === null) {
+      return res.status(404).json(errorObject);
+    }
+    User.findOne({'username': currentUsername}, (err, currentUser) => {
+      if(err) next(err);
+      if(currentUser === null) {
+        return res.status(404).json(errorObject);
+      }
+      currentUser.contacts.push(newContact);
+      currentUser.save((err, modifiedUser) => {
+        if(err) next(err);
+        res.json(modifiedUser);
+      });
+    });
+  });
+}
+
+function removeUserFromContactsList(contacts, usernameToDelete) {
+  for(let i = 0; i < contacts.length; ++i) {
+    if(contacts[i].username === usernameToDelete) {
+      contacts.splice(i, 1);
+    }
+  }
+  return contacts;
+}
+
+function removeContact(req, res, next) {
+  let deleteContactUsername = req.params.contactUsername;
+  let currentUsername = req.params.username;
+  User.findOne({'username': currentUsername}, (err, currentUser) => {
+    if(err) next(err);
+    if(currentUser === null) {
+      return res.status(404).json(errorObject);
+    }
+    currentUser.contacts = removeUserFromContactsList(
+                            currentUser.contacts,
+                            deleteContactUsername);
+    currentUser.save((err, modifiedUser) => {
+      if(err) next(err);
+      res.json(modifiedUser);
+    });
+  });
+}
+
+module.exports = {
+  list,
+  register,
+  login,
+  removeAll,
+  findUser,
+  listContacts,
+  addContact,
+  removeContact
+};

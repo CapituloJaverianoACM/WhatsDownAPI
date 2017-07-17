@@ -16,7 +16,7 @@ const UserSchema = new Schema ({
   statusMessage: {
     type: String,
     required: false,
-    default: ''
+    default: 'ACM of PUJ is awesome!'
   },
   image: {
     type: String,
@@ -27,6 +27,11 @@ const UserSchema = new Schema ({
     type: String,
     required: true,
     match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
+  },
+  contacts: {
+    type: [this],
+    required: false,
+    default: []
   },
   createdAt: {
     type: Date,

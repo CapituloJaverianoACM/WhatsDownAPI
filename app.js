@@ -25,7 +25,14 @@ db.once('open', () => { console.log("Connected correctly to database"); });
 const index = require('./routes/index');
 const users = require('./routes/users');
 
+const ChatController = require('./controllers/chatController');
+
 const app = express();
+
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+app.io = io;
+ChatController.iochat(app.io)
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
