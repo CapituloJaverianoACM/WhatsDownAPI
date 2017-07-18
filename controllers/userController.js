@@ -10,6 +10,10 @@ const errorObject = {
   }
 };
 
+/**
+  * Lists all the users in the database.
+  * @returns {JSON}
+  */
 function list(req, res, next) {
   User.find({}, (err, query) => {
     if (err) next(err);
